@@ -6,9 +6,9 @@ import (
 )
 
 func main() {
-	server := api.NewServer()
+	r := api.NewServer()
 
-	err := server.Start("0.0.0.0:8080")
+	err := r.Run("0.0.0.0:8080")
 	if err != nil {
 		log.Fatal("cannot start server:", err)
 	}

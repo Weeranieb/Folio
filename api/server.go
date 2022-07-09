@@ -2,33 +2,40 @@ package api
 
 import (
 	"Folio/handler"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-type Server struct {
-	router *gin.Engine
+var (
+	app *gin.Engine
+)
+
+func registerRouter(r *gin.RouterGroup) {
+	r.GET("/realtime", handler.GetRealTime())
+	r.GET("/auth", handler.GetAuth())
+	r.GET("/folio", handler.GetFolio())
+	r.GET("/secure", handler.GetSecure())
+	r.GET("/account", handler.GetAccount())
+
+	r.POST("/realtime", handler.PostRealTime())
+	r.POST("/auth", handler.PostAuth())
+	r.POST("/folio", handler.PostFolio())
+	r.POST("/secure", handler.PostSecure())
+	r.POST("/account", handler.PostAccount())
 }
 
-func NewServer() *Server {
-	server := Server{}
+func NewServer() *gin.Engine {
 	router := gin.Default()
 
-	router.GET("/realtime", handler.GetRealTime())
-	router.GET("/auth", handler.GetAuth())
-	router.GET("/folio", handler.GetFolio())
-	router.GET("/secure", handler.GetSecure())
-	router.GET("/account", handler.GetAccount())
+	r := router.Group("/api")
 
-	router.POST("/realtime", handler.PostRealTime())
-	router.POST("/auth", handler.PostAuth())
-	router.POST("/folio", handler.PostFolio())
-	router.POST("/secure", handler.PostSecure())
-	router.POST("/account", handler.PostAccount())
-	server.router = router
-	return &server
+	registerRouter(r)
+
+	return router
 }
 
-func (server *Server) Start(address string) error {
-	return server.router.Run(address)
+// entrypoint
+func Handler(w http.ResponseWriter, r *http.Request) {
+	app.ServeHTTP(w, r)
 }
